@@ -62,7 +62,7 @@ create table if not exists unit_content (
   grade text not null check (grade in ('6', '8', '10')),
   unit_number int not null,
   section text not null check (
-    section in ('objectives', 'text', 'theory', 'task', 'criteria', 'rubric')
+    section in ('objectives', 'text', 'content', 'task', 'reflection', 'criteria', 'rubric')
   ),
   content text default '',
   updated_at timestamptz not null default now(),
