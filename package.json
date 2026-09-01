@@ -1,6 +1,6 @@
 {
   "name": "hank-korean-g10-app",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "IB Korean A G10 Learning Platform by Hank Teacher",
   "main": "main.js",
   "scripts": {

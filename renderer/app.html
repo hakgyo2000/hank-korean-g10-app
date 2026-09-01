@@ -128,6 +128,24 @@ body{
 .placeholder-icon{font-size:30px;margin-bottom:12px}
 .placeholder-text{font-size:14px;font-weight:600}
 
+/* ── 홈 화면 ── */
+.home-view{
+  height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;padding:40px;
+}
+.home-emoji{
+  width:96px;height:96px;border-radius:26px;background:var(--rust-soft);
+  font-size:48px;display:flex;align-items:center;justify-content:center;
+  margin-bottom:28px;
+}
+.home-title{
+  font-size:26px;font-weight:800;letter-spacing:-.01em;line-height:1.4;
+  margin-bottom:12px;
+}
+.home-sub{font-size:14.5px;color:var(--ink-soft);margin-bottom:28px}
+.home-divider{width:56px;height:3px;border-radius:2px;background:var(--rust);margin-bottom:24px}
+.home-hint{font-size:12.5px;color:var(--ink-soft)}
+
 /* ── 승인 대기 화면 ── */
 #gate{
   position:fixed;inset:0;background:var(--paper);
@@ -179,19 +197,29 @@ body{
 </nav>
 
 <main class="main">
-  <div class="main-header">
-    <div class="crumb" id="crumb">Unit 1 · 생쥐와 인간</div>
-    <div class="page-title" id="page-title">학습목표</div>
+  <div id="home-view" class="home-view">
+    <div class="home-emoji">🏫</div>
+    <h1 class="home-title">Hank Teacher의<br>한국어교실에 온 것을 환영합니다!</h1>
+    <p class="home-sub">왼쪽에서 단원을 선택하면 학습을 시작할 수 있어요.</p>
+    <div class="home-divider"></div>
+    <p class="home-hint">문의사항이 있다면 언제든 선생님께 편하게 물어보세요 :)</p>
   </div>
-  <div class="pills" id="task-pills" style="display:none">
-    <button class="pill active" data-section="task">과제내용</button>
-    <button class="pill" data-section="criteria">Criteria</button>
-    <button class="pill" data-section="rubric">Rubric</button>
-  </div>
-  <div class="content-card">
-    <div class="placeholder">
-      <div class="placeholder-icon">📝</div>
-      <div class="placeholder-text" id="placeholder-text">콘텐츠 준비 중입니다.</div>
+
+  <div id="unit-view" class="hidden">
+    <div class="main-header">
+      <div class="crumb" id="crumb">Unit 1</div>
+      <div class="page-title" id="page-title">학습목표</div>
+    </div>
+    <div class="pills" id="task-pills" style="display:none">
+      <button class="pill active" data-section="task">과제내용</button>
+      <button class="pill" data-section="criteria">Criteria</button>
+      <button class="pill" data-section="rubric">Rubric</button>
+    </div>
+    <div class="content-card">
+      <div class="placeholder">
+        <div class="placeholder-icon">📝</div>
+        <div class="placeholder-text" id="placeholder-text">콘텐츠 준비 중입니다.</div>
+      </div>
     </div>
   </div>
 </main>
@@ -280,8 +308,6 @@ async function loadUnits() {
     }
     list.appendChild(buildUnitEl(u));
   });
-
-  if (units[0]) selectUnit(units[0], true);
 }
 
 function buildUnitEl(u) {
@@ -325,20 +351,10 @@ function buildUnitEl(u) {
   return wrap;
 }
 
-function selectUnit(u, openFirst) {
-  currentUnit = u;
-  if (openFirst) {
-    const firstHead = document.querySelector('.unit-head');
-    const firstSub = document.querySelector('.submenu');
-    if (firstHead && firstSub) {
-      firstHead.classList.add('open');
-      firstSub.classList.add('open');
-      selectSection(u, 'objectives', firstSub);
-    }
-  }
-}
-
 function selectSection(u, sectionKey, submenuEl) {
+  document.getElementById('home-view').classList.add('hidden');
+  document.getElementById('unit-view').classList.remove('hidden');
+
   currentUnit = u;
   currentSection = sectionKey;
   submenuEl.querySelectorAll('.sub-item').forEach((el) => {
