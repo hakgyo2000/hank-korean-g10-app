@@ -8,11 +8,14 @@
 create table if not exists profiles (
   id uuid primary key references auth.users(id) on delete cascade,
   email text,
+  username text,
   name text,
   role text not null default 'pending' check (role in ('pending', 'student', 'teacher')),
   grade text not null check (grade in ('6', '8', '10')),
   created_at timestamptz not null default now()
 );
+
+create unique index if not exists profiles_username_grade_unique on profiles (grade, username);
 
 alter table profiles enable row level security;
 

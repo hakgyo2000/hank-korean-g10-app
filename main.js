@@ -82,7 +82,8 @@ autoUpdater.on('download-progress', (progress) => {
 
 // ── IPC ──
 ipcMain.on('go-app', () => {
-  mainWindow.loadFile('renderer/app.html');
+  // 캐시된 이전 프로필 상태(bfcache)가 재사용되지 않도록 매번 새 쿼리로 로드
+  mainWindow.loadFile('renderer/app.html', { search: `t=${Date.now()}` });
 });
 
 ipcMain.on('logout', () => {
