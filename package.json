@@ -1,6 +1,6 @@
 {
   "name": "hank-korean-g10-app",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "IB Korean A G10 Learning Platform by Hank Teacher",
   "main": "main.js",
   "scripts": {
@@ -27,7 +27,8 @@
     },
     "mac": {
       "category": "public.app-category.education",
-      "target": ["zip"]
+      "target": ["zip"],
+      "artifactName": "hank-korean-g10-${arch}-mac.zip"
     },
     "files": [
       "main.js",
