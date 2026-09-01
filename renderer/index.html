@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>로그인 — Hank Korean G10</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="config.js"></script>
+<style>
+:root{
+  --paper:      #f7f1e6;
+  --paper-soft: #efe6d3;
+  --paper-line: #e2d3b3;
+  --ink:        #2a241c;
+  --ink-soft:   #8a7c65;
+  --rust:       #b1502f;
+  --rust-dark:  #8f3f24;
+  --rust-soft:  #f1ded0;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:'Pretendard Variable','Pretendard',sans-serif;
+  background:var(--paper);
+  min-height:100vh;
+  display:flex;align-items:center;justify-content:center;
+  -webkit-app-region:drag;
+  color:var(--ink);
+}
+.card{
+  background:#fffdf8;
+  border:1px solid var(--paper-line);
+  border-radius:20px;
+  padding:48px 44px;
+  width:400px;
+  -webkit-app-region:no-drag;
+  box-shadow:0 24px 60px -30px rgba(42,36,28,.25);
+}
+.logo{text-align:center;margin-bottom:28px}
+.logo-mark{
+  width:44px;height:44px;border-radius:12px;background:var(--rust);
+  color:#fff;font-weight:800;font-size:18px;
+  display:flex;align-items:center;justify-content:center;
+  margin:0 auto 14px;
+}
+.logo-title{font-size:20px;font-weight:800;color:var(--ink);margin-bottom:4px;letter-spacing:-.01em}
+.logo-sub{font-size:12px;color:var(--ink-soft);letter-spacing:.03em}
+.conn-bar{text-align:center;font-size:11px;color:var(--ink-soft);margin-bottom:22px}
+.dot{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:5px;vertical-align:middle}
+.dot-ok{background:#4c8b5a}.dot-err{background:var(--rust)}.dot-wait{background:#c9a15a;animation:blink .8s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+.field{margin-bottom:16px}
+.field label{display:block;font-size:12px;font-weight:700;color:var(--ink-soft);margin-bottom:8px;letter-spacing:.02em}
+.field input{
+  width:100%;padding:13px 15px;background:var(--paper);
+  border:1.5px solid var(--paper-line);border-radius:10px;
+  color:var(--ink);font-size:14px;font-family:inherit;
+  transition:border-color .2s;outline:none;
+}
+.field input:focus{border-color:var(--rust)}
+.field input::placeholder{color:#b8ab8e}
+.btn-p{
+  width:100%;padding:14px;background:var(--rust);border:none;border-radius:10px;
+  color:#fff;font-size:15px;font-weight:700;font-family:inherit;cursor:pointer;
+  transition:background .2s;margin-top:4px;
+}
+.btn-p:hover{background:var(--rust-dark)}
+.btn-p:disabled{background:#c9bda2;cursor:not-allowed}
+.btn-link{
+  background:none;border:none;color:var(--ink-soft);font-size:12.5px;font-weight:600;
+  font-family:inherit;cursor:pointer;text-decoration:underline;padding:0;
+  display:block;text-align:center;margin-top:18px;transition:color .2s;
+}
+.btn-link:hover{color:var(--rust)}
+.alert{border-radius:8px;font-size:13px;padding:12px 14px;margin-top:14px;line-height:1.6;display:none}
+.alert.show{display:block}
+.alert.error{background:#fbeae3;border:1px solid #e6bfab;color:var(--rust-dark)}
+.alert.success{background:#eaf3ea;border:1px solid #bcd9c1;color:#2f6b3d}
+.alert.info{background:var(--rust-soft);border:1px solid #e2c2a8;color:var(--rust-dark)}
+.panel{display:none}.panel.active{display:block}
+.divider{border:none;border-top:1px solid var(--paper-line);margin:20px 0}
+.footer{text-align:center;margin-top:24px;font-size:11px;color:#b8ab8e}
+</style>
+</head>
+<body>
+<div class="card">
+
+  <div class="panel active" id="p-login">
+    <div class="logo">
+      <div class="logo-mark">국</div>
+      <div class="logo-title">Hank Korean</div>
+      <div class="logo-sub">IB Korean A · Grade 10</div>
+    </div>
+    <div class="conn-bar" id="conn-bar"><span class="dot dot-wait"></span>서버 연결 확인 중...</div>
+    <div class="field"><label>이메일</label><input type="email" id="login-email" placeholder="이메일 입력" autocomplete="username"></div>
+    <div class="field"><label>비밀번호</label><input type="password" id="login-pw" placeholder="비밀번호 입력" autocomplete="current-password"></div>
+    <button class="btn-p" id="btn-login" onclick="doLogin()">로그인</button>
+    <button class="btn-link" onclick="go('p-signup')">계정이 없으신가요? 회원가입</button>
+    <div class="alert error" id="login-err"></div>
+    <hr class="divider">
+    <div class="footer">Built by Hank Teacher</div>
+  </div>
+
+  <div class="panel" id="p-signup">
+    <div class="logo" style="margin-bottom:24px">
+      <div class="logo-mark" style="width:36px;height:36px;font-size:15px">국</div>
+      <div class="logo-title" style="font-size:17px">회원가입</div>
+      <div class="logo-sub">가입 후 선생님 승인이 필요합니다</div>
+    </div>
+    <div class="field"><label>이름</label><input type="text" id="su-name" placeholder="이름 입력" autocomplete="name"></div>
+    <div class="field"><label>이메일</label><input type="email" id="su-email" placeholder="이메일 입력" autocomplete="email"></div>
+    <div class="field"><label>비밀번호</label><input type="password" id="su-pw" placeholder="비밀번호 (6자 이상)" autocomplete="new-password"></div>
+    <div class="field"><label>비밀번호 확인</label><input type="password" id="su-pw2" placeholder="비밀번호 재입력" autocomplete="new-password"></div>
+    <button class="btn-p" id="btn-signup" onclick="doSignup()">회원가입</button>
+    <button class="btn-link" onclick="go('p-login')">← 로그인으로 돌아가기</button>
+    <div class="alert error" id="signup-err"></div>
+    <div class="alert success" id="signup-ok"></div>
+  </div>
+
+</div>
+<script>
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON, {
+  auth: { autoRefreshToken: true, persistSession: true, detectSessionInUrl: false }
+});
+
+(async () => {
+  const bar = document.getElementById('conn-bar');
+  try {
+    const r = await fetch(SUPABASE_URL + '/auth/v1/settings', { headers: { apikey: SUPABASE_ANON } });
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    bar.innerHTML = '<span class="dot dot-ok"></span>서버 연결됨';
+  } catch (e) {
+    bar.innerHTML = '<span class="dot dot-err"></span>서버 연결 실패 (' + e.message + ')';
+  }
+})();
+
+// 이미 로그인된 세션이 있으면 바로 앱으로
+(async () => {
+  const { data } = await sb.auth.getSession();
+  if (data?.session) window.electronAPI?.goApp();
+})();
+
+function go(id) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.querySelectorAll('.alert').forEach(a => { a.classList.remove('show'); a.textContent = ''; });
+}
+function alert_(id, msg, type) { const e = document.getElementById(id); e.textContent = msg; e.className = 'alert ' + type + ' show'; }
+function loading(id, on, label) { const b = document.getElementById(id); b.disabled = on; b.textContent = on ? '처리 중...' : label; }
+
+document.getElementById('login-email').onkeydown = e => { if (e.key === 'Enter') document.getElementById('login-pw').focus(); };
+document.getElementById('login-pw').onkeydown = e => { if (e.key === 'Enter') doLogin(); };
+
+async function doLogin() {
+  const email = document.getElementById('login-email').value.trim();
+  const password = document.getElementById('login-pw').value;
+  document.getElementById('login-err').classList.remove('show');
+  if (!email || !password) { alert_('login-err', '이메일과 비밀번호를 입력해주세요.', 'error'); return; }
+  loading('btn-login', true, '로그인');
+  try {
+    const { error } = await sb.auth.signInWithPassword({ email, password });
+    if (error) {
+      const m = (error.message || '').toLowerCase();
+      throw new Error(m.includes('invalid') || m.includes('credentials')
+        ? '이메일 또는 비밀번호가 올바르지 않습니다.'
+        : '로그인 오류: ' + error.message);
+    }
+    window.electronAPI?.goApp();
+  } catch (err) {
+    alert_('login-err', err.message, 'error');
+  } finally {
+    loading('btn-login', false, '로그인');
+  }
+}
+
+async function doSignup() {
+  const name = document.getElementById('su-name').value.trim();
+  const email = document.getElementById('su-email').value.trim();
+  const pw = document.getElementById('su-pw').value;
+  const pw2 = document.getElementById('su-pw2').value;
+  document.getElementById('signup-err').classList.remove('show');
+  document.getElementById('signup-ok').classList.remove('show');
+  if (!name || !email || !pw) { alert_('signup-err', '모든 항목을 입력해주세요.', 'error'); return; }
+  if (pw.length < 6) { alert_('signup-err', '비밀번호는 6자 이상이어야 합니다.', 'error'); return; }
+  if (pw !== pw2) { alert_('signup-err', '비밀번호가 일치하지 않습니다.', 'error'); return; }
+  loading('btn-signup', true, '회원가입');
+  try {
+    const { data, error } = await sb.auth.signUp({ email, password: pw });
+    if (error) throw new Error('가입 오류: ' + error.message);
+
+    const userId = data?.user?.id;
+    if (userId) {
+      const { error: pe } = await sb.from('profiles').insert({
+        id: userId, email, name, role: 'pending', grade: GRADE,
+      });
+      if (pe) console.warn('[프로필 생성]', pe.message);
+    }
+
+    if (data?.session) {
+      window.electronAPI?.goApp();
+    } else {
+      alert_('signup-ok', '가입 완료! 이메일 인증 후 로그인해주세요.', 'success');
+      setTimeout(() => go('p-login'), 2500);
+    }
+  } catch (err) {
+    alert_('signup-err', err.message, 'error');
+  } finally {
+    loading('btn-signup', false, '회원가입');
+  }
+}
+</script>
+</body>
+</html>

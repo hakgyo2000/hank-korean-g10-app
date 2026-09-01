@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hank Korean G10</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="config.js"></script>
+<style>
+:root{
+  --paper:      #f7f1e6;
+  --paper-soft: #efe6d3;
+  --paper-line: #e2d3b3;
+  --ink:        #2a241c;
+  --ink-soft:   #8a7c65;
+  --rust:       #b1502f;
+  --rust-dark:  #8f3f24;
+  --rust-soft:  #f1ded0;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{
+  font-family:'Pretendard Variable','Pretendard',sans-serif;
+  background:var(--paper);
+  color:var(--ink);
+  display:flex;
+  overflow:hidden;
+}
+
+/* ── 사이드바 ── */
+.sidebar{
+  width:250px;flex-shrink:0;height:100vh;
+  background:var(--paper-soft);
+  border-right:1px solid var(--paper-line);
+  display:flex;flex-direction:column;
+  -webkit-app-region:drag;
+}
+.side-top{padding:22px 20px 16px;-webkit-app-region:no-drag}
+.brand{display:flex;align-items:center;gap:10px;margin-bottom:2px}
+.brand-mark{
+  width:30px;height:30px;border-radius:8px;background:var(--rust);
+  color:#fff;font-weight:800;font-size:13px;
+  display:flex;align-items:center;justify-content:center;
+}
+.brand-name{font-size:15px;font-weight:800;letter-spacing:-.01em}
+.brand-sub{font-size:11px;color:var(--ink-soft);margin-left:40px;letter-spacing:.02em}
+
+.side-scroll{flex:1;overflow-y:auto;padding:8px 14px 14px;-webkit-app-region:no-drag}
+.sem-label{
+  font-size:11px;font-weight:700;color:var(--ink-soft);
+  letter-spacing:.06em;text-transform:uppercase;
+  margin:18px 8px 8px;
+}
+.sem-label:first-child{margin-top:6px}
+.sem-divider{border:none;border-top:1px solid var(--paper-line);margin:4px 8px}
+
+.unit{margin-bottom:4px}
+.unit-head{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:10px 10px;border-radius:10px;cursor:pointer;
+  font-size:13.5px;font-weight:700;color:var(--ink);
+  transition:background .15s;
+}
+.unit-head:hover{background:#e8ddc4}
+.unit-head.open{background:var(--rust-soft);color:var(--rust-dark)}
+.unit-title-row{display:flex;flex-direction:column;gap:2px}
+.unit-tag{
+  font-size:9.5px;font-weight:700;color:var(--rust);
+  background:var(--rust-soft);padding:1px 6px;border-radius:5px;
+  width:fit-content;letter-spacing:.02em;
+}
+.chev{font-size:10px;color:var(--ink-soft);transition:transform .15s}
+.unit-head.open .chev{transform:rotate(90deg)}
+
+.submenu{display:none;padding:4px 4px 10px 22px}
+.submenu.open{display:block}
+.sub-item{
+  padding:8px 10px;font-size:13px;color:var(--ink-soft);
+  border-radius:8px;cursor:pointer;font-weight:600;
+  transition:background .15s,color .15s;
+}
+.sub-item:hover{background:#e8ddc4;color:var(--ink)}
+.sub-item.active{background:var(--rust);color:#fff}
+
+.side-bottom{
+  padding:14px 16px;border-top:1px solid var(--paper-line);
+  -webkit-app-region:no-drag;
+}
+.user-row{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.user-avatar{
+  width:32px;height:32px;border-radius:50%;background:var(--rust-soft);
+  color:var(--rust-dark);font-weight:800;font-size:13px;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+.user-meta{overflow:hidden}
+.user-name{font-size:12.5px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.user-role{font-size:10.5px;color:var(--ink-soft)}
+.side-actions{display:flex;gap:6px}
+.mini-btn{
+  flex:1;padding:8px;border-radius:8px;border:1px solid var(--paper-line);
+  background:#fffdf8;color:var(--ink-soft);font-size:11.5px;font-weight:700;
+  cursor:pointer;font-family:inherit;transition:.15s;
+}
+.mini-btn:hover{border-color:var(--rust);color:var(--rust)}
+
+/* ── 메인 영역 ── */
+.main{flex:1;height:100vh;overflow-y:auto;padding:36px 44px}
+.main-header{margin-bottom:26px}
+.crumb{font-size:12px;color:var(--ink-soft);font-weight:600;margin-bottom:6px}
+.page-title{font-size:24px;font-weight:800;letter-spacing:-.01em}
+
+.pills{display:flex;gap:8px;margin-bottom:22px}
+.pill{
+  padding:9px 18px;border-radius:999px;border:1.5px solid var(--paper-line);
+  background:#fffdf8;font-size:13px;font-weight:700;color:var(--ink-soft);
+  cursor:pointer;font-family:inherit;transition:.15s;
+}
+.pill:hover{border-color:var(--rust)}
+.pill.active{background:var(--rust);border-color:var(--rust);color:#fff}
+
+.content-card{
+  background:#fffdf8;border:1px solid var(--paper-line);border-radius:16px;
+  padding:36px;min-height:280px;
+  display:flex;align-items:center;justify-content:center;text-align:center;
+}
+.placeholder{color:var(--ink-soft)}
+.placeholder-icon{font-size:30px;margin-bottom:12px}
+.placeholder-text{font-size:14px;font-weight:600}
+
+/* ── 승인 대기 화면 ── */
+#gate{
+  position:fixed;inset:0;background:var(--paper);
+  display:flex;align-items:center;justify-content:center;z-index:50;
+}
+.gate-card{
+  background:#fffdf8;border:1px solid var(--paper-line);border-radius:20px;
+  padding:48px 44px;width:380px;text-align:center;
+}
+.gate-icon{font-size:34px;margin-bottom:16px}
+.gate-title{font-size:18px;font-weight:800;margin-bottom:8px}
+.gate-text{font-size:13.5px;color:var(--ink-soft);line-height:1.6;margin-bottom:24px}
+.hidden{display:none}
+</style>
+</head>
+<body>
+
+<div id="gate" class="hidden">
+  <div class="gate-card">
+    <div class="gate-icon">⏳</div>
+    <div class="gate-title">승인 대기 중입니다</div>
+    <div class="gate-text">선생님이 계정을 승인하면<br>수업 콘텐츠를 이용할 수 있어요.</div>
+    <button class="mini-btn" style="padding:12px" onclick="doLogout()">로그아웃</button>
+  </div>
+</div>
+
+<nav class="sidebar">
+  <div class="side-top">
+    <div class="brand">
+      <div class="brand-mark">국</div>
+      <div class="brand-name">Hank Korean</div>
+    </div>
+    <div class="brand-sub">IB Korean A · Grade 10</div>
+  </div>
+  <div class="side-scroll" id="unit-list"></div>
+  <div class="side-bottom">
+    <div class="user-row">
+      <div class="user-avatar" id="user-avatar">-</div>
+      <div class="user-meta">
+        <div class="user-name" id="user-name">-</div>
+        <div class="user-role" id="user-role">-</div>
+      </div>
+    </div>
+    <div class="side-actions">
+      <button class="mini-btn" onclick="checkUpdate()">업데이트 확인</button>
+      <button class="mini-btn" onclick="doLogout()">로그아웃</button>
+    </div>
+  </div>
+</nav>
+
+<main class="main">
+  <div class="main-header">
+    <div class="crumb" id="crumb">Unit 1 · 생쥐와 인간</div>
+    <div class="page-title" id="page-title">학습목표</div>
+  </div>
+  <div class="pills" id="task-pills" style="display:none">
+    <button class="pill active" data-section="task">과제내용</button>
+    <button class="pill" data-section="criteria">Criteria</button>
+    <button class="pill" data-section="rubric">Rubric</button>
+  </div>
+  <div class="content-card">
+    <div class="placeholder">
+      <div class="placeholder-icon">📝</div>
+      <div class="placeholder-text" id="placeholder-text">콘텐츠 준비 중입니다.</div>
+    </div>
+  </div>
+</main>
+
+<script>
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON, {
+  auth: { autoRefreshToken: true, persistSession: true, detectSessionInUrl: false }
+});
+
+const SECTIONS = [
+  { key: 'objectives', label: '학습목표' },
+  { key: 'text', label: '텍스트' },
+  { key: 'theory', label: '이론' },
+  { key: 'task', label: '과제' },
+];
+const TASK_TABS = [
+  { key: 'task', label: '과제내용' },
+  { key: 'criteria', label: 'Criteria' },
+  { key: 'rubric', label: 'Rubric' },
+];
+
+let currentUnit = null;
+let currentSection = 'objectives';
+let currentTaskTab = 'task';
+
+function doLogout() {
+  sb.auth.signOut().finally(() => window.electronAPI?.logout());
+}
+function checkUpdate() { window.electronAPI?.checkUpdate(); }
+
+async function init() {
+  const { data: sessData } = await sb.auth.getSession();
+  if (!sessData?.session) { window.electronAPI?.logout(); return; }
+  const user = sessData.session.user;
+
+  const { data: profile, error } = await sb
+    .from('profiles').select('*').eq('id', user.id).single();
+
+  if (error || !profile) {
+    document.getElementById('gate').classList.remove('hidden');
+    document.querySelector('.gate-title').textContent = '프로필을 찾을 수 없습니다';
+    document.querySelector('.gate-text').innerHTML = '선생님에게 문의해주세요.';
+    return;
+  }
+
+  document.getElementById('user-name').textContent = profile.name || profile.email;
+  document.getElementById('user-avatar').textContent = (profile.name || profile.email || '?').slice(0, 1).toUpperCase();
+  document.getElementById('user-role').textContent =
+    profile.role === 'teacher' ? '선생님' : profile.role === 'student' ? '학생' : '승인 대기';
+
+  if (profile.role === 'pending') {
+    document.getElementById('gate').classList.remove('hidden');
+    return;
+  }
+
+  await loadUnits();
+}
+
+async function loadUnits() {
+  const { data: units, error } = await sb
+    .from('units').select('*').eq('grade', GRADE).order('number');
+
+  const list = document.getElementById('unit-list');
+  list.innerHTML = '';
+
+  if (error || !units || units.length === 0) {
+    list.innerHTML = '<div style="padding:12px;font-size:12.5px;color:var(--ink-soft)">등록된 단원이 없습니다.</div>';
+    return;
+  }
+
+  let lastSemester = null;
+  units.forEach((u) => {
+    const semester = Math.ceil(u.number / 2);
+    if (semester !== lastSemester) {
+      if (lastSemester !== null) {
+        const hr = document.createElement('hr');
+        hr.className = 'sem-divider';
+        list.appendChild(hr);
+      }
+      const label = document.createElement('div');
+      label.className = 'sem-label';
+      label.textContent = semester + '학기';
+      list.appendChild(label);
+      lastSemester = semester;
+    }
+    list.appendChild(buildUnitEl(u));
+  });
+
+  if (units[0]) selectUnit(units[0], true);
+}
+
+function buildUnitEl(u) {
+  const wrap = document.createElement('div');
+  wrap.className = 'unit';
+
+  const head = document.createElement('div');
+  head.className = 'unit-head';
+  head.innerHTML = `
+    <div class="unit-title-row">
+      <span>Unit ${u.number} · ${u.title}</span>
+      ${u.status === 'planned' ? '<span class="unit-tag">예정</span>' : ''}
+    </div>
+    <span class="chev">▶</span>`;
+
+  const submenu = document.createElement('div');
+  submenu.className = 'submenu';
+  SECTIONS.forEach((s) => {
+    const item = document.createElement('div');
+    item.className = 'sub-item';
+    item.textContent = s.label;
+    item.dataset.section = s.key;
+    item.onclick = (e) => { e.stopPropagation(); selectSection(u, s.key, submenu); };
+    submenu.appendChild(item);
+  });
+
+  head.onclick = () => {
+    const isOpen = head.classList.contains('open');
+    document.querySelectorAll('.unit-head.open').forEach((h) => h.classList.remove('open'));
+    document.querySelectorAll('.submenu.open').forEach((s) => s.classList.remove('open'));
+    if (!isOpen) {
+      head.classList.add('open');
+      submenu.classList.add('open');
+    }
+  };
+
+  wrap.appendChild(head);
+  wrap.appendChild(submenu);
+  wrap._head = head;
+  wrap._submenu = submenu;
+  return wrap;
+}
+
+function selectUnit(u, openFirst) {
+  currentUnit = u;
+  if (openFirst) {
+    const firstHead = document.querySelector('.unit-head');
+    const firstSub = document.querySelector('.submenu');
+    if (firstHead && firstSub) {
+      firstHead.classList.add('open');
+      firstSub.classList.add('open');
+      selectSection(u, 'objectives', firstSub);
+    }
+  }
+}
+
+function selectSection(u, sectionKey, submenuEl) {
+  currentUnit = u;
+  currentSection = sectionKey;
+  submenuEl.querySelectorAll('.sub-item').forEach((el) => {
+    el.classList.toggle('active', el.dataset.section === sectionKey);
+  });
+
+  const sectionInfo = SECTIONS.find((s) => s.key === sectionKey);
+  document.getElementById('crumb').textContent = `Unit ${u.number} · ${u.title}`;
+  document.getElementById('page-title').textContent = sectionInfo.label;
+
+  const taskPills = document.getElementById('task-pills');
+  if (sectionKey === 'task') {
+    taskPills.style.display = 'flex';
+    currentTaskTab = 'task';
+    renderTaskPills();
+    renderContent();
+  } else {
+    taskPills.style.display = 'none';
+    renderContent();
+  }
+}
+
+function renderTaskPills() {
+  const wrap = document.getElementById('task-pills');
+  wrap.innerHTML = '';
+  TASK_TABS.forEach((t) => {
+    const btn = document.createElement('button');
+    btn.className = 'pill' + (t.key === currentTaskTab ? ' active' : '');
+    btn.textContent = t.label;
+    btn.onclick = () => {
+      currentTaskTab = t.key;
+      renderTaskPills();
+      renderContent();
+    };
+    wrap.appendChild(btn);
+  });
+}
+
+async function renderContent() {
+  const key = currentSection === 'task' ? currentTaskTab : currentSection;
+  document.getElementById('placeholder-text').textContent = '콘텐츠 준비 중입니다.';
+
+  if (!currentUnit) return;
+  const { data } = await sb
+    .from('unit_content')
+    .select('content')
+    .eq('grade', GRADE)
+    .eq('unit_number', currentUnit.number)
+    .eq('section', key)
+    .maybeSingle();
+
+  if (data?.content) {
+    document.getElementById('placeholder-text').textContent = data.content;
+  }
+}
+
+init();
+</script>
+</body>
+</html>
