@@ -1,12 +1,12 @@
 {
   "name": "hank-korean-g10-app",
-  "version": "1.0.1",
+  "version": "1.0.3",
   "description": "IB Korean A G10 Learning Platform by Hank Teacher",
   "main": "main.js",
   "scripts": {
     "start": "electron .",
-    "build": "electron-builder --mac zip --x64 --arm64",
-    "publish": "electron-builder --mac zip --x64 --arm64 --publish always"
+    "build": "electron-builder --mac zip pkg --x64 --arm64",
+    "publish": "electron-builder --mac zip pkg --x64 --arm64 --publish always"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.45.0",
@@ -27,8 +27,11 @@
     },
     "mac": {
       "category": "public.app-category.education",
-      "target": ["zip"],
-      "artifactName": "hank-korean-g10-${arch}-mac.zip"
+      "target": ["zip", "pkg"],
+      "artifactName": "hank-korean-g10-${arch}-mac.${ext}"
+    },
+    "pkg": {
+      "installLocation": "/Applications"
     },
     "files": [
       "main.js",

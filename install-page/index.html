@@ -65,21 +65,21 @@ code{
   <div class="card">
     <h2>1. 다운로드 — Mac 종류에 맞게 선택</h2>
     <div class="btn-row">
-      <a class="btn" href="https://github.com/hakgyo2000/hank-korean-g10-app/releases/latest/download/hank-korean-g10-arm64-mac.zip">Apple Silicon (M1/M2/M3)</a>
-      <a class="btn secondary" href="https://github.com/hakgyo2000/hank-korean-g10-app/releases/latest/download/hank-korean-g10-x64-mac.zip">Intel Mac</a>
+      <a class="btn" href="https://github.com/hakgyo2000/hank-korean-g10-app/releases/latest/download/hank-korean-g10-arm64-mac.pkg">Apple Silicon (M1/M2/M3)</a>
+      <a class="btn secondary" href="https://github.com/hakgyo2000/hank-korean-g10-app/releases/latest/download/hank-korean-g10-x64-mac.pkg">Intel Mac</a>
     </div>
-    <div class="hint">버튼을 누르면 항상 최신 버전 zip 파일이 바로 다운로드됩니다. 자신의 Mac 종류에 맞는 버튼을 눌러 받은 뒤 압축을 해제해주세요. (Mac 종류는 &#8226; 왼쪽 위 애플 로고 → 이 Mac에 관하여에서 확인 가능)</div>
+    <div class="hint">버튼을 누르면 항상 최신 버전 설치 파일(.pkg)이 바로 다운로드됩니다. (Mac 종류는 &#8226; 왼쪽 위 애플 로고 → 이 Mac에 관하여에서 확인 가능)</div>
   </div>
 
   <div class="card">
-    <h2>2. 첫 실행 시 "손상되었습니다" 경고가 뜨면</h2>
+    <h2>2. 설치 — 다운로드된 파일을 더블클릭</h2>
     <p class="steps">
-      1) 터미널(Terminal) 앱 실행<br>
-      2) 아래 명령어 입력 후 Enter (경로는 실제 앱 위치에 맞게 드래그해서 넣어도 됩니다)<br>
-      <code>xattr -cr "/Applications/Hank Korean G10.app"</code><br>
-      3) 앱을 다시 실행
+      1) 다운로드된 <code>.pkg</code> 파일을 더블클릭<br>
+      2) "확인되지 않은 개발자" 경고가 뜨면 → <strong>완료</strong> 버튼 클릭<br>
+      3) 시스템 설정 → 개인정보 보호 및 보안 화면 맨 아래로 스크롤 → <strong>확인 없이 열기</strong> 클릭 (Mac 암호 또는 지문 필요)<br>
+      4) 다시 .pkg 파일을 더블클릭 → 설치 마법사가 열리면 계속 → 설치
     </p>
-    <div class="hint">Apple 개발자 인증서가 없는 앱이라 macOS가 보내는 보안 경고입니다. 위 명령어는 격리(quarantine) 속성만 제거하며 앱 내용은 바뀌지 않습니다.</div>
+    <div class="hint">Apple 개발자 인증서가 없는 앱이라 macOS가 처음 한 번 보내는 보안 확인 절차입니다. 터미널은 전혀 필요 없고, 설치가 끝나면 이 앱은 이후 완전히 정상적으로 바로 열립니다.</div>
   </div>
 
   <div class="card">

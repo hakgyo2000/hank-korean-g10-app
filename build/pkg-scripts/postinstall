@@ -1,0 +1,10 @@
+#!/bin/bash
+# electron-builder pkg postinstall — 설치 직후 격리(quarantine) 속성을 제거해서
+# 학생들이 터미널을 열 필요 없이 바로 앱을 실행할 수 있게 함.
+APP_PATH="/Applications/Hank Korean G10.app"
+
+if [ -d "$APP_PATH" ]; then
+  xattr -cr "$APP_PATH" 2>/dev/null || true
+fi
+
+exit 0
