@@ -1,6 +1,6 @@
 {
   "name": "hank-korean-g10-app",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "IB Korean A G10 Learning Platform by Hank Teacher",
   "main": "main.js",
   "scripts": {
@@ -19,6 +19,7 @@
   "build": {
     "appId": "com.hankteacher.koreang10",
     "productName": "Hank Korean G10",
+    "afterSign": "build/afterSign.js",
     "publish": {
       "provider": "github",
       "owner": "hakgyo2000",
